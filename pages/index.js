@@ -1,11 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
-import { Inter } from "next/font/google";
-import styles from "@/styles/Home.module.css";
-
-const inter = Inter({ subsets: ["latin"] });
+import { useState } from "react";
 
 export default function Home() {
+
+  const [quarters , setQuarters] = useState(0);
+  const [dimes , setDimes] = useState(0);
+  const [nickels , setNickels] = useState(0);
+  const [pennies , setPennies] = useState(0);
+
+
   return (
     <>
       <Head>
@@ -14,94 +18,53 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <div>
-            <a
-              href="#"
-              target="_blank"
-            >
-              <span className="text-2xl">
-              Coin Change
-              </span>
-              By <span>VijayAlpha</span>
-            </a>
+      <main className="">
+        <nav className="nav__bar">
+          <div className="name">
+            <Image src="/coin-25.svg" width={50} height={50} alt="coin-25" />
+            <h1>Coin Changer</h1>
           </div>
-          <p className="cursor-pointer">
-            <code className={styles.code}>Connect Wallet</code>
-          </p>
-        </div>
-
-        <div className={styles.center}>
-
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
+          <div className="">
+            <div className="btn">Connect Wallet</div>
           </div>
-        </div>
+        </nav>
 
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
+        <div className="container">
+          <div className="">
+            <h2>Shardeum Mission 23 - Coin Changer</h2>
+            <p>
+              This is a Shardeum Mission 23 challenge submission, which uses the
+              CoinChanger contract on the Shardeum Sphinx 1.x network. Try to
+              add the due amount and your paid amount to calculate the change in
+              quarters (25 cents), dimes (10 cents), nickels (5 cents), and
+              pennies (1 cent).
             </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
+          </div>
+          <div className="inputs">
+            <input type="number" name="dueAmount" id="" />
+            <input type="number" name="paidAmount" id="" />
+          </div>
+          <div className="coin-display">
+            <h3>Your Change</h3>
+            <ul>
+              <li>
+                <span> {quarters} quarters </span>
+                <Image width={150} height={150}  src="/coin-25.svg" alt="" srcset="" />
+              </li>
+              <li>
+                <span> {dimes} dimes </span>
+                <Image width={150} height={150}  src="/coin-10.svg" alt="" srcset="" />
+              </li>
+              <li>
+                <span> {nickels} nickels </span>
+                <Image width={150} height={150}  src="/coin-5.svg" alt="" srcset="" />
+              </li>
+              <li>
+                <span> {pennies} pennies </span>
+                <Image width={150} height={150}  src="/coin-1.svg" alt="" srcset="" />
+              </li>
+            </ul>
+          </div>
         </div>
       </main>
     </>
