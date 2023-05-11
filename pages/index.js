@@ -1,13 +1,89 @@
 import Head from "next/head";
 import Image from "next/image";
 import { useState } from "react";
+import ethers from "ethers";
 
 export default function Home() {
+  const contractAddress = "0x12fB07acc2e2C5402854c6D2B02b3A2108cb43d8";
+  const abi = [
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "amountDue",
+          type: "uint256",
+        },
+        {
+          internalType: "uint256",
+          name: "amountPaid",
+          type: "uint256",
+        },
+      ],
+      name: "changeReturn",
+      outputs: [
+        {
+          internalType: "uint256[]",
+          name: "",
+          type: "uint256[]",
+        },
+      ],
+      stateMutability: "pure",
+      type: "function",
+    },
+  ];
+  const [quarters, setQuarters] = useState(0);
+  const [dimes, setDimes] = useState(0);
+  const [nickels, setNickels] = useState(0);
+  const [pennies, setPennies] = useState(0);
+  const [address, setAddress] = useState(0);
+  const [txcompleted, setTxCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [quarters , setQuarters] = useState(0);
-  const [dimes , setDimes] = useState(0);
-  const [nickels , setNickels] = useState(0);
-  const [pennies , setPennies] = useState(0);
+  async function connectWallet() {
+    try {
+      let accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+      let account = accounts[0];
+
+      setAddress(account);
+
+      return true;
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong!!! Pls try again");
+    }
+  }
+
+  const callChangeReturn = async () => {
+    try {
+      const { ethereum } = window;
+
+      if (ethereum) {
+        setIsLoading(true);
+
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+
+        const contract = new ethers.Contract(contractAddress, abi, signer);
+
+        let callTx = await contract.changeReturn(
+          ethers.BigNumber.from(amountDue),
+          ethers.BigNumber.from(amountPaid)
+        );
+
+        let tx = await callTx.wait();
+
+        if (tx) {
+          setTxCompleted(true);
+        }
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log("Error minting character", error);
+    }
+  };
 
 
   return (
@@ -18,21 +94,32 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="">
-        <nav className="nav__bar">
-          <div className="name">
-            <Image src="/coin-25.svg" width={50} height={50} alt="coin-25" />
-            <h1>Coin Changer</h1>
+      <main className="container m-auto p-4">
+        <nav className="nav__bar flex justify-between items-center w-full py-5 px-10">
+          <div className="name flex items-center gap-4">
+            <Image src="/coin-25.svg" width={35} height={35} alt="coin-25" />
+            <h1 className="font-bold text-xl uppercase text-yellow-600">
+              Coin Changer
+            </h1>
           </div>
-          <div className="">
-            <div className="btn">Connect Wallet</div>
+          <div
+            className="px-5 py-3 bg-blue-600 rounded-lg text-white font-medium cursor-pointer"
+            onClick={connectWallet}
+          >
+            {address ? (
+              <div className="btn">{address}</div>
+            ) : (
+              <div className="btn">Connect Wallet</div>
+            )}
           </div>
         </nav>
 
-        <div className="container">
-          <div className="">
-            <h2>Shardeum Mission 23 - Coin Changer</h2>
-            <p>
+        <div className="container h-screen flex flex-col justify-evenly items-center text-center">
+          <div className="w-1/2">
+            <h2 className="text-5xl font-bold mb-5">
+              Shardeum Mission 23 <br /> Coin Changer
+            </h2>
+            <p className="font-medium">
               This is a Shardeum Mission 23 challenge submission, which uses the
               CoinChanger contract on the Shardeum Sphinx 1.x network. Try to
               add the due amount and your paid amount to calculate the change in
@@ -41,27 +128,44 @@ export default function Home() {
             </p>
           </div>
           <div className="inputs">
-            <input type="number" name="dueAmount" id="" />
-            <input type="number" name="paidAmount" id="" />
+            <label htmlFor="dueAmount" className=" font-semibold text-lg">
+              Due Amount
+            </label>
+            <input
+              className="w-72 h-14 m-4 p-3 rounded-lg outline-4 outline-yellow-600 border-2 border-yellow-500 font-semibold"
+              type="number"
+              name="paidAmount"
+              id="dueAmount"
+            />
+            <label htmlFor="dueAmount" className=" font-semibold text-lg">
+              Paid Amount
+            </label>
+
+            <input
+              className="w-72 h-14 m-4 p-3 rounded-lg outline-4 outline-yellow-600 border-2 border-yellow-500 font-semibold"
+              type="number"
+              name="paidAmount"
+              id=""
+            />
           </div>
           <div className="coin-display">
-            <h3>Your Change</h3>
-            <ul>
+            <h3 className="text-3xl font-bold mb-5">Your Change : </h3>
+            <ul className="flex gap-6">
               <li>
                 <span> {quarters} quarters </span>
-                <Image width={150} height={150}  src="/coin-25.svg" alt="" srcset="" />
+                <Image width={150} height={150} src="/coin-25.svg" alt="" />
               </li>
               <li>
                 <span> {dimes} dimes </span>
-                <Image width={150} height={150}  src="/coin-10.svg" alt="" srcset="" />
+                <Image width={150} height={150} src="/coin-10.svg" alt="" />
               </li>
               <li>
                 <span> {nickels} nickels </span>
-                <Image width={150} height={150}  src="/coin-5.svg" alt="" srcset="" />
+                <Image width={150} height={150} src="/coin-5.svg" alt="" />
               </li>
               <li>
                 <span> {pennies} pennies </span>
-                <Image width={150} height={150}  src="/coin-1.svg" alt="" srcset="" />
+                <Image width={150} height={150} src="/coin-1.svg" alt="" />
               </li>
             </ul>
           </div>
